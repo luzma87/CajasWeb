@@ -38,7 +38,8 @@ class ImportController {
 
         def firstLine = true
 
-        def files = []
+//        def files = []
+        def files = [:]
 
         def dir = new File(pathImages)
         dir.eachFileRecurse(FileType.FILES) { f ->
@@ -49,7 +50,11 @@ class ImportController {
                 num = name[0..2]
             }
             num = num.toInteger()
-            files[num] = name
+//            files[num] = name
+            if (files[num]) {
+                files[num] = []
+            }
+            files[num] += name
         }
 
         new File(pathCsv + file).splitEachLine(";") { fields ->
@@ -134,6 +139,22 @@ class ImportController {
                 def formaVida2
                 if (formaVida2Nom && formaVida2Nom != "") {
                     formaVida2 = FormaVida.findAllByNombre(formaVida2Nom)
+                    if (formaVida2.size() == 1) {
+                        formaVida2 = formaVida2.first()
+                    } else if (formaVida2.size() > 1) {
+                        println "Hay ${formaVida2.size()} formas de vida ${formaVida2Nom}"
+                        formaVida2 = formaVida2.first()
+                    } else {
+                        formaVida2 = new FormaVida()
+                        formaVida2.nombre = formaVida2Nom
+                        if (!formaVida2.save(flush: true)) {
+                            println formaVida2.errors
+                        }
+                    }
+                }
+
+                if (formaVida1Nom == "cushion" && (!formaVida2Nom || formaVida2Nom == "")) {
+                    formaVida2 = FormaVida.findAllByNombre("herb")
                     if (formaVida2.size() == 1) {
                         formaVida2 = formaVida2.first()
                     } else if (formaVida2.size() > 1) {
@@ -249,6 +270,16 @@ class ImportController {
 //                    println i + "   " + ff
 //                }
                 def id = fields[0].toString().trim()
+//                def alts1 = fields[6].toString().split("-")
+//                def alts = []
+//                alts1.each { alt ->
+//                    def a = alt.replaceAll("m", "")
+//                    a = a.trim()
+//                    alts += a
+//                }
+                def alts = fields[6].toString().split("-")
+                alts = alts*.replaceAll("m", "")
+                alts = alts*.trim()
                 def lat = fields[8].toString().trim()
                 def lon = fields[9].toString().trim()
                 def desc = fields[10].toString().trim()
@@ -256,34 +287,36 @@ class ImportController {
 //                println desc.encodeAsURL().decodeURL()
 //                println desc.decodeURL()
 
-                if (lat != "" && lon != "" && lat != "null" && lon != "null") {
-                    lat = lat.replaceAll(",", ".").toDouble()
-                    lon = lon.replaceAll(",", ".").toDouble()
-                    def especie = Especie.findByLinkTropicos(id)
-                    if (especie) {
-                        especie.descripcion = (especie.descripcion ?: "") + "; " + desc
-                        if (!especie.save(flush: true)) {
-                            println especie.errors
-                        }
-                        def foto = Foto.findAllByEspecie(especie)
-                        if (foto.size() == 1) {
-                            foto = foto.first()
-                        } else if (foto.size() > 1) {
-                            foto = new Foto()
-                            foto.lugar = lugar
-                            foto.especie = especie
-                        } else {
-                            println "no hay fotos para la especie ${especie.nombre}"
-                        }
+//                if (lat != "" && lon != "" && lat != "null" && lon != "null") {
+                lat = lat.replaceAll(",", ".").toDouble()
+                lon = lon.replaceAll(",", ".").toDouble()
+                def especie = Especie.findByLinkTropicos(id)
+                if (especie) {
+                    especie.descripcion = (especie.descripcion ?: "") + "; " + desc
+                    if (!especie.save(flush: true)) {
+                        println especie.errors
+                    }
+                    def foto = Foto.findAllByEspecie(especie)
+                    if (foto.size() == 1) {
+                        foto = foto.first()
+                    } else if (foto.size() > 1) {
+                        foto = new Foto()
+                        foto.lugar = lugar
+                        foto.especie = especie
+                    } else {
+                        println "no hay fotos para la especie ${especie.nombre}"
+                    }
+                    if (lat != "" && lon != "" && lat != "null" && lon != "null") {
                         foto.latitud = lat
                         foto.longitud = lon
-                        if (!foto.save(flush: true)) {
-                            println foto.errors
-                        }
-                    } else {
-                        println "no hay especie con ID ${id}"
                     }
+                    if (!foto.save(flush: true)) {
+                        println foto.errors
+                    }
+                } else {
+                    println "no hay especie con ID ${id}"
                 }
+//                }
             }
             firstLine = false
         }
@@ -385,7 +418,7 @@ class ImportController {
         Especie.list().each { e ->
             insertEspecies += insertEspecie + "(\\\"${e.id}\\\", \\\"${e.nombre}\\\", \\\"${norm(e.nombre)}\\\", \\\"${e.generoId}\\\", \\\"${e.color1Id}\\\"," +
                     " \\\"${e.color2Id}\\\", \\\"${e.formaVida1Id}\\\", \\\"${e.formaVida2Id}\\\", \\\"${e.linkTropicos}\\\");"
-            insertEspecies+= "\");<br/>"
+            insertEspecies += "\");<br/>"
         }
 
         def insertFoto = "db.execSQL(\"INSERT INTO fotos (id, latitud, longitud, especie_id, lugar_id, path) VALUES "
