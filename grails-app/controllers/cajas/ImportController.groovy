@@ -3,6 +3,7 @@ package cajas
 import groovy.io.FileType
 
 /**
+ * Controlador para importar de los archivos excel a la base de datos
  *
  */
 class ImportController {
