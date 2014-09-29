@@ -14,7 +14,7 @@ environments {
     development {
         dataSource {
             dbCreate = "update"
-            url = "jdbc:postgresql://127.0.0.1:5432/cajas"
+            url = "jdbc:postgresql://127.0.0.1:5432/floramo"
             username = "postgres"
             password = "postgres"
         }

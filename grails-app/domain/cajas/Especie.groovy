@@ -19,11 +19,14 @@ class Especie {
     String nombreComun
 
     static constraints = {
+        color1 blank: true, nullable: true
         color2 blank: true, nullable: true
-        formaVida2 blank: true, nullable: true
-        nombreComun blank: true, nullable: true
-
         descripcion blank: true, nullable: true, maxSize: 10239
+        formaVida1 blank: true, nullable: true
+        formaVida2 blank: true, nullable: true
+        linkCajas blank: true, nullable: true
+        linkTropicos blank: true, nullable: true
+        nombreComun blank: true, nullable: true
     }
 
     String toString() {

@@ -42,8 +42,7 @@ class ImportController {
 
         def firstLine = true
 
-//        def files = []
-        def files = [:]
+        def files = []
 
         def dir = new File(pathImages)
         dir.eachFileRecurse(FileType.FILES) { f ->
@@ -54,11 +53,7 @@ class ImportController {
                 num = name[0..2]
             }
             num = num.toInteger()
-//            files[num] = name
-            if (files[num]) {
-                files[num] = []
-            }
-            files[num] += name
+            files[num] = name
         }
 
         new File(pathCsv + file).splitEachLine(";") { fields ->
@@ -143,22 +138,6 @@ class ImportController {
                 def formaVida2
                 if (formaVida2Nom && formaVida2Nom != "") {
                     formaVida2 = FormaVida.findAllByNombre(formaVida2Nom)
-                    if (formaVida2.size() == 1) {
-                        formaVida2 = formaVida2.first()
-                    } else if (formaVida2.size() > 1) {
-                        println "Hay ${formaVida2.size()} formas de vida ${formaVida2Nom}"
-                        formaVida2 = formaVida2.first()
-                    } else {
-                        formaVida2 = new FormaVida()
-                        formaVida2.nombre = formaVida2Nom
-                        if (!formaVida2.save(flush: true)) {
-                            println formaVida2.errors
-                        }
-                    }
-                }
-
-                if (formaVida1Nom == "cushion" && (!formaVida2Nom || formaVida2Nom == "")) {
-                    formaVida2 = FormaVida.findAllByNombre("herb")
                     if (formaVida2.size() == 1) {
                         formaVida2 = formaVida2.first()
                     } else if (formaVida2.size() > 1) {

@@ -23,33 +23,6 @@
 			</g:if>
 			<ol class="property-list foto">
 			
-				<g:if test="${fotoInstance?.especie}">
-				<li class="fieldcontain">
-					<span id="especie-label" class="property-label"><g:message code="foto.especie.label" default="Especie" /></span>
-					
-						<span class="property-value" aria-labelledby="especie-label"><g:link controller="especie" action="show" id="${fotoInstance?.especie?.id}">${fotoInstance?.especie?.encodeAsHTML()}</g:link></span>
-					
-				</li>
-				</g:if>
-			
-				<g:if test="${fotoInstance?.latitud}">
-				<li class="fieldcontain">
-					<span id="latitud-label" class="property-label"><g:message code="foto.latitud.label" default="Latitud" /></span>
-					
-						<span class="property-value" aria-labelledby="latitud-label"><g:fieldValue bean="${fotoInstance}" field="latitud"/></span>
-					
-				</li>
-				</g:if>
-			
-				<g:if test="${fotoInstance?.longitud}">
-				<li class="fieldcontain">
-					<span id="longitud-label" class="property-label"><g:message code="foto.longitud.label" default="Longitud" /></span>
-					
-						<span class="property-value" aria-labelledby="longitud-label"><g:fieldValue bean="${fotoInstance}" field="longitud"/></span>
-					
-				</li>
-				</g:if>
-			
 				<g:if test="${fotoInstance?.lugar}">
 				<li class="fieldcontain">
 					<span id="lugar-label" class="property-label"><g:message code="foto.lugar.label" default="Lugar" /></span>
@@ -59,11 +32,29 @@
 				</li>
 				</g:if>
 			
+				<g:if test="${fotoInstance?.coordenada}">
+				<li class="fieldcontain">
+					<span id="coordenada-label" class="property-label"><g:message code="foto.coordenada.label" default="Coordenada" /></span>
+					
+						<span class="property-value" aria-labelledby="coordenada-label"><g:link controller="coordenada" action="show" id="${fotoInstance?.coordenada?.id}">${fotoInstance?.coordenada?.encodeAsHTML()}</g:link></span>
+					
+				</li>
+				</g:if>
+			
 				<g:if test="${fotoInstance?.path}">
 				<li class="fieldcontain">
 					<span id="path-label" class="property-label"><g:message code="foto.path.label" default="Path" /></span>
 					
 						<span class="property-value" aria-labelledby="path-label"><g:fieldValue bean="${fotoInstance}" field="path"/></span>
+					
+				</li>
+				</g:if>
+			
+				<g:if test="${fotoInstance?.especie}">
+				<li class="fieldcontain">
+					<span id="especie-label" class="property-label"><g:message code="foto.especie.label" default="Especie" /></span>
+					
+						<span class="property-value" aria-labelledby="especie-label"><g:link controller="especie" action="show" id="${fotoInstance?.especie?.id}">${fotoInstance?.especie?.encodeAsHTML()}</g:link></span>
 					
 				</li>
 				</g:if>
