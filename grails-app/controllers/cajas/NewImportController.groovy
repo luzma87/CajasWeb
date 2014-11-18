@@ -222,6 +222,78 @@ class NewImportController {
         }
     }
 
+    def import3() {
+        def webapp = servletContext.getRealPath("/")
+        def pathCsv = webapp + "csv/"
+
+        def file = 'descripciones_luz.csv'
+
+        def linea = 1
+
+        new File(pathCsv + file).splitEachLine("@") { fields ->
+            if (fields.size() != 5) {
+                println "Fila ${linea}   " + fields
+            }
+            /*
+                0   familia
+                1   nombre cientifico (genero especie)
+                2   autor
+                3   descripcion español
+                4   descripcion inglés
+             */
+            def strFamilia = fields[0].trim()
+            def strGenero = fields[1].split(" ")[0].trim()
+            def strEspecie = fields[1].split(" ")[1].trim()
+            def autor = fields[2].trim()
+            def descEs = fields[3].trim()
+            def descEn = fields[4].trim()
+
+            def especieObj1 = Especie.withCriteria {
+                eq("nombre", strEspecie)
+                genero {
+                    eq("nombre", strGenero)
+                    familia {
+                        eq("nombre", strFamilia)
+                    }
+                }
+            }
+
+            def especieObj2 = Especie.withCriteria {
+                eq("nombre", strEspecie)
+                genero {
+                    eq("nombre", strGenero)
+                }
+            }
+
+            def especieObj3 = Especie.withCriteria {
+                eq("nombre", strEspecie)
+            }
+            if (especieObj1.size() == 0 || especieObj2.size() == 0 || especieObj3.size() == 0) {
+                println "Linea " + linea
+                println "Fields familia: *" + strFamilia + "* genero: *" + strGenero + "* especie: *" + strEspecie + "*"
+                println "obj1 familia: *" + especieObj1?.genero?.familia?.nombre + "*"
+                println "obj1 genero: *" + especieObj1?.genero?.nombre + "*"
+                println "obj1 especie: *" + especieObj1?.nombre + "*"
+                if (especieObj1.size() == 0) {
+                    println "..................................................................................................."
+                    println "obj2 familia: *" + especieObj2?.genero?.familia?.nombre + "*"
+                    println "obj2 genero: *" + especieObj2?.genero?.nombre + "*"
+                    println "obj2 especie: *" + especieObj2?.nombre + "*"
+                    if (especieObj2.size() == 0) {
+                        println "..................................................................................................."
+                        println "obj3 familia: *" + especieObj3?.genero?.familia?.nombre + "*"
+                        println "obj3 genero: *" + especieObj3?.genero?.nombre + "*"
+                        println "obj3 especie: *" + especieObj3?.nombre + "*"
+                    }
+                }
+                println "************************************************************************************************************************"
+            }
+            linea++
+        }
+        println "DONE!"
+        render "OK"
+    }
+
     def norm(String s) {
         def replace = [
                 "á": "a",
