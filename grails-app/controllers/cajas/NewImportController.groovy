@@ -244,9 +244,9 @@ class NewImportController {
             def strFamilia = fields[0].trim()
             def strGenero = fields[1].split(" ")[0].trim()
             def strEspecie = fields[1].split(" ")[1].trim()
-            def autor = fields[2].trim()
-            def descEs = fields[3].trim()
-            def descEn = fields[4].trim()
+            def strAutor = fields[2].trim()
+            def strDescEs = fields[3].trim()
+            def strDescEn = fields[4].trim()
 
             def especieObj1 = Especie.withCriteria {
                 eq("nombre", strEspecie)
@@ -287,6 +287,32 @@ class NewImportController {
                     }
                 }
                 println "************************************************************************************************************************"
+            } else {
+                if (especieObj1.size() > 1) {
+                    println "Linea " + linea
+                    println "Fields familia: *" + strFamilia + "* genero: *" + strGenero + "* especie: *" + strEspecie + "*"
+                    println "obj1 familia: *" + especieObj1?.genero?.familia?.nombre + "*"
+                    println "obj1 genero: *" + especieObj1?.genero?.nombre + "*"
+                    println "obj1 especie: *" + especieObj1?.nombre + "*"
+                    println "************************************************************************************************************************"
+                } else {
+                    def especieObj = especieObj1.first()
+                    especieObj.autor = strAutor
+                    especieObj.descripcionEn = strDescEn.replaceAll("Distribu", "\\\\nDistribu")
+                    especieObj.descripcionEs = strDescEs.replaceAll("Distribu", "\\\\nDistribu")
+//                    if (linea == 1) {
+//                        println strDescEn
+//                        println especieObj.descripcionEn
+//                    }
+                    if (!especieObj.save(flush: true)) {
+                        println "ERROR AL GUARDAR LA ESPECIE::: Linea " + linea
+                        println "Fields familia: *" + strFamilia + "* genero: *" + strGenero + "* especie: *" + strEspecie + "*"
+                        println especieObj.errors
+                        println "******************************************************************************************************"
+                    } else {
+//                        println "linea " + linea + " OK"
+                    }
+                }
             }
             linea++
         }
@@ -349,11 +375,12 @@ class NewImportController {
         }
 
         def insertEspecie = "db.execSQL(\"INSERT INTO especies (id, nombre, nombre_norm, genero_id, color1_id, " +
-                "color2_id, forma_vida1_id, forma_vida2_id, id_tropicos) VALUES "
+                "color2_id, forma_vida1_id, forma_vida2_id, id_tropicos, descripcion_es, descripcion_en, autor) VALUES "
         def insertEspecies = ""
         Especie.list().each { e ->
             insertEspecies += insertEspecie + "(\\\"${e.id}\\\", \\\"${e.nombre}\\\", \\\"${norm(e.nombre)}\\\", \\\"${e.generoId}\\\", \\\"${e.color1Id}\\\"," +
-                    " \\\"${e.color2Id}\\\", \\\"${e.formaVida1Id}\\\", \\\"${e.formaVida2Id}\\\", \\\"${e.linkTropicos}\\\");"
+                    " \\\"${e.color2Id}\\\", \\\"${e.formaVida1Id}\\\", \\\"${e.formaVida2Id}\\\", \\\"${e.linkTropicos}\\\"," +
+                    " \\\"${e.descripcionEs}\\\", \\\"${e.descripcionEn}\\\", \\\"${e.autor}\\\");"
             insertEspecies += "\");<br/>"
         }
 

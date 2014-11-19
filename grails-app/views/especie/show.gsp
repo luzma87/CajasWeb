@@ -64,6 +64,33 @@
                     </li>
                 </g:if>
 
+                <g:if test="${especieInstance?.descripcionEs}">
+                    <li class="fieldcontain">
+                        <span id="descripcionEs-label" class="property-label"><g:message code="especie.descripcionEs.label" default="Descripcion ES"/></span>
+
+                        <span class="property-value" aria-labelledby="descripcionEs-label"><g:fieldValue bean="${especieInstance}" field="descripcionEs"/></span>
+
+                    </li>
+                </g:if>
+
+                <g:if test="${especieInstance?.descripcionEn}">
+                    <li class="fieldcontain">
+                        <span id="descripcionEn-label" class="property-label"><g:message code="especie.descripcionEn.label" default="Descripcion EN"/></span>
+
+                        <span class="property-value" aria-labelledby="descripcionEn-label"><g:fieldValue bean="${especieInstance}" field="descripcionEn"/></span>
+
+                    </li>
+                </g:if>
+
+                <g:if test="${especieInstance?.autor}">
+                    <li class="fieldcontain">
+                        <span id="autor-label" class="property-label"><g:message code="especie.autor.label" default="Autor"/></span>
+
+                        <span class="property-value" aria-labelledby="autor-label"><g:fieldValue bean="${especieInstance}" field="autor"/></span>
+
+                    </li>
+                </g:if>
+
                 <g:if test="${especieInstance?.color1}">
                     <li class="fieldcontain">
                         <span id="color1-label" class="property-label"><g:message code="especie.color1.label" default="Color1"/></span>
@@ -82,6 +109,19 @@
                     </li>
                 </g:if>
 
+                <g:if test="${especieInstance?.genero?.familia}">
+                    <li class="fieldcontain">
+                        <span id="familia-label" class="property-label"><g:message code="especie.familia.label" default="Familia"/></span>
+
+                        <span class="property-value" aria-labelledby="familia-label">
+                            <g:link controller="familia" action="show" id="${especieInstance?.genero?.familia?.id}">
+                                ${especieInstance?.genero?.familia?.encodeAsHTML()}
+                            </g:link>
+                        </span>
+
+                    </li>
+                </g:if>
+
                 <g:if test="${especieInstance?.genero}">
                     <li class="fieldcontain">
                         <span id="genero-label" class="property-label"><g:message code="especie.genero.label" default="Genero"/></span>
@@ -96,7 +136,7 @@
                         <span id="linkCajas-label" class="property-label"><g:message code="especie.linkCajas.label" default="Link Cajas"/></span>
 
                         <span class="property-value" aria-labelledby="linkCajas-label">
-                            <g:set var="linkCajas" value="${setts.floraBseLink+especieInstance.linkCajas}"/>
+                            <g:set var="linkCajas" value="${setts.floraBseLink + especieInstance.linkCajas}"/>
                             <a href="${linkCajas}" target="_blank">${linkCajas}</a>
                         </span>
 
@@ -108,7 +148,7 @@
                         <span id="linkTropicos-label" class="property-label"><g:message code="especie.linkTropicos.label" default="Link Tropicos"/></span>
 
                         <span class="property-value" aria-labelledby="linkTropicos-label">
-                            <g:set var="linkTropicos" value="${setts.tropicosBaseLink+especieInstance.linkTropicos}"/>
+                            <g:set var="linkTropicos" value="${setts.tropicosBaseLink + especieInstance.linkTropicos}"/>
                             <a href="${linkTropicos}" target="_blank">${linkTropicos}</a>
                         </span>
 
